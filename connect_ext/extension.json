@@ -1,0 +1,9 @@
+{
+    "name": "CloudBlue Connect Transformations Extension Mock for E2Es",
+    "description": "This extension is used to run E2E tests for CloudBlue Connect transformations Extensions.",
+    "version": "26.7",
+    "audience": ["distributor", "vendor", "reseller"],
+    "readme_url": "https://example.com/README.md",
+    "changelog_url": "https://example.com/CHANGELOG.md",
+    "icon": "bar_chart"
+}
