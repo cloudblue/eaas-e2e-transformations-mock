@@ -2,10 +2,63 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 128:
+/***/ 464:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
-/* harmony import */ var _cloudblueconnect_connect_ui_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(243);
+
+// EXTERNAL MODULE: ./node_modules/@cloudblueconnect/connect-ui-toolkit/dist/index.js
+var dist = __webpack_require__(164);
+;// CONCATENATED MODULE: ./ui/src/components.js
+/*
+Copyright (c) 2023, CloudBlue LLC
+All rights reserved.
+*/
+
+// prepare UI components
+const components_prepareSettings = (settings) => {
+  try {
+    return `<p>${JSON.stringify(settings)}</p>`;
+  } catch (e) { return ''; }
+};
+
+const components_prepareTransformations = (transformations) => {
+  try {
+    return transformations.reduce((list, transformation) => `${list}<li class="list-item">
+        <div class="list-item-content">
+          <h4>${transformation.id} - ${transformation.name}</h4>
+          <p>${transformation.class_fqn}</p>
+          <p>${transformation.status}</p>
+          <p>${transformation.description}</p>
+        </div>
+      </li>`, '');
+  } catch (e) { return ''; }
+};
+
+// render UI components
+const components_renderSettings = (settings) => {
+  const element = document.getElementById('settings');
+  element.innerHTML = settings;
+};
+
+const components_renderTransformations = (transformations) => {
+  const element = document.getElementById('transformations');
+  element.innerHTML = transformations;
+};
+
+// render UI components - show/hide
+const components_showComponent = (id) => {
+  if (!id) return;
+  const element = document.getElementById(id);
+  element.classList.remove('hidden');
+};
+
+const components_hideComponent = (id) => {
+  if (!id) return;
+  const element = document.getElementById(id);
+  element.classList.add('hidden');
+};
+
+;// CONCATENATED MODULE: ./ui/src/pages.js
 /*
 Copyright (c) 2023, CloudBlue LLC
 All rights reserved.
@@ -15,8 +68,51 @@ All rights reserved.
 
 
 
-(0,_cloudblueconnect_connect_ui_toolkit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .ZP)({ 'main-card': _cloudblueconnect_connect_ui_toolkit__WEBPACK_IMPORTED_MODULE_0__/* .Card */ .Zb })
-  .then(() => {});
+const index = async () => {
+  hideComponent('app');
+  showComponent('loader');
+  const tfns = await getTfns();
+  const transformations = prepareTransformations(tfns);
+  hideComponent('loader');
+  showComponent('app');
+  renderTransformations(transformations);
+};
+
+const settings = async (app) => {
+  if (!app) return;
+  hideComponent('app');
+  showComponent('loader');
+  const data = await getSettings();
+  const dataSettings = prepareSettings(data);
+  renderSettings(dataSettings);
+  hideComponent('loader');
+  showComponent('app');
+};
+
+const tfnMultiplierSettings = () => {
+  components_hideComponent('app');
+  components_showComponent('loader');
+  // here you can
+  // const columns = [];
+  // const transformations = prepareTransformations(tfns);
+  components_hideComponent('loader');
+  components_showComponent('app');
+  // renderTransformations(transformations);
+};
+
+;// CONCATENATED MODULE: ./ui/src/pages/transformations/multiplier_settings.js
+/*
+Copyright (c) 2023, CloudBlue LLC
+All rights reserved.
+*/
+
+
+
+
+
+
+(0,dist/* default */.ZP)({ 'main-card': dist/* Card */.Zb })
+  .then(() => { tfnMultiplierSettings(); });
 
 
 /***/ })
@@ -108,7 +204,7 @@ All rights reserved.
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			858: 0
+/******/ 			577: 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -158,7 +254,7 @@ All rights reserved.
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(128)))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(464)))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
