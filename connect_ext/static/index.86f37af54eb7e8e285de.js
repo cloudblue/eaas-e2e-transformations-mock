@@ -2,12 +2,12 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 256:
+/***/ 536:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 
-// EXTERNAL MODULE: ../install_temp/node_modules/@cloudblueconnect/connect-ui-toolkit/dist/index.js
-var dist = __webpack_require__(243);
+// EXTERNAL MODULE: ./node_modules/@cloudblueconnect/connect-ui-toolkit/dist/index.js
+var dist = __webpack_require__(164);
 ;// CONCATENATED MODULE: ./ui/src/utils.js
 
 /*
@@ -16,9 +16,9 @@ All rights reserved.
 */
 // API calls to the backend
 /* eslint-disable import/prefer-default-export */
-const getSettings = () => fetch('/api/settings').then((response) => response.json());
+const utils_getSettings = () => fetch('/api/settings').then((response) => response.json());
 
-const utils_getTfns = () => fetch('/api/transformations').then((response) => response.json());
+const getTfns = () => fetch('/api/transformations').then((response) => response.json());
 
 ;// CONCATENATED MODULE: ./ui/src/components.js
 /*
@@ -27,13 +27,13 @@ All rights reserved.
 */
 
 // prepare UI components
-const prepareSettings = (settings) => {
+const components_prepareSettings = (settings) => {
   try {
     return `<p>${JSON.stringify(settings)}</p>`;
   } catch (e) { return ''; }
 };
 
-const components_prepareTransformations = (transformations) => {
+const prepareTransformations = (transformations) => {
   try {
     return transformations.reduce((list, transformation) => `${list}<li class="list-item">
         <div class="list-item-content">
@@ -47,12 +47,12 @@ const components_prepareTransformations = (transformations) => {
 };
 
 // render UI components
-const renderSettings = (settings) => {
+const components_renderSettings = (settings) => {
   const element = document.getElementById('settings');
   element.innerHTML = settings;
 };
 
-const components_renderTransformations = (transformations) => {
+const renderTransformations = (transformations) => {
   const element = document.getElementById('transformations');
   element.innerHTML = transformations;
 };
@@ -81,24 +81,24 @@ All rights reserved.
 
 
 const index = async () => {
-  hideComponent('app');
-  showComponent('loader');
+  components_hideComponent('app');
+  components_showComponent('loader');
   const tfns = await getTfns();
   const transformations = prepareTransformations(tfns);
-  hideComponent('loader');
-  showComponent('app');
+  components_hideComponent('loader');
+  components_showComponent('app');
   renderTransformations(transformations);
 };
 
 const settings = async (app) => {
   if (!app) return;
-  components_hideComponent('app');
-  components_showComponent('loader');
+  hideComponent('app');
+  showComponent('loader');
   const data = await getSettings();
   const dataSettings = prepareSettings(data);
   renderSettings(dataSettings);
-  components_hideComponent('loader');
-  components_showComponent('app');
+  hideComponent('loader');
+  showComponent('app');
 };
 
 const tfnMultiplierSettings = () => {
@@ -112,7 +112,7 @@ const tfnMultiplierSettings = () => {
   // renderTransformations(transformations);
 };
 
-;// CONCATENATED MODULE: ./ui/src/pages/settings.js
+;// CONCATENATED MODULE: ./ui/src/pages/index.js
 /*
 Copyright (c) 2023, CloudBlue LLC
 All rights reserved.
@@ -123,8 +123,8 @@ All rights reserved.
 
 
 
-(0,dist/* default */.ZP)({ 'settings-card': dist/* Card */.Zb })
-  .then(settings);
+(0,dist/* default */.ZP)({ 'main-card': dist/* Card */.Zb })
+  .then(() => { index(); });
 
 
 /***/ })
@@ -216,7 +216,7 @@ All rights reserved.
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			571: 0
+/******/ 			826: 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -266,7 +266,7 @@ All rights reserved.
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(256)))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(536)))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

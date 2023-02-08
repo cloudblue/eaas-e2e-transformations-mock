@@ -37,8 +37,8 @@ module.exports = {
   entry: {
     index: __dirname + "/ui/src/pages/index.js",
     settings: __dirname + "/ui/src/pages/settings.js",
-    multipliers_settings: __dirname + "/ui/src/pages/transformations/multiplier_settings.js",
-    simple_settings: __dirname + "/ui/src/pages/transformations/simple_settings.js"
+    ['transformations/multiplier_settings']: __dirname + "/ui/src/pages/transformations/multiplier_settings.js",
+    ['transformations/simple_settings']: __dirname + "/ui/src/pages/transformations/simple_settings.js"
   },
   output: {
     filename: '[name].[contenthash].js',
