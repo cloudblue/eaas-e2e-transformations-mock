@@ -20,6 +20,31 @@ const getSettings = () => fetch('/api/settings').then((response) => response.jso
 
 const utils_getTfns = () => fetch('/api/transformations').then((response) => response.json());
 
+const liTemplate = (label, checked) => `
+  <label>
+    <input type="checkbox" name="${label}" value="1" ${checked && 'checked'}>
+    <span>${label}</span>
+  </label>`;
+
+const utils_addListItems = config => {
+  const parent = document.getElementById('increase_columns');
+  const availableColumns = config.context.available_columns;
+  const selectedColumns = config.columns.input;
+
+  availableColumns.forEach(column => {
+    const li = document.createElement('li');
+    let checked = false;
+    if (selectedColumns.find(x => x.name === column.name)) {
+      checked = true;
+    }
+
+    li.appendChild(document.createTextNode(column.name));
+    li.classList.add('list-item');
+    li.innerHTML = liTemplate(column.name, checked);
+    parent.appendChild(li);
+  });
+};
+
 ;// CONCATENATED MODULE: ./ui/src/components.js
 /*
 Copyright (c) 2023, CloudBlue LLC
@@ -101,15 +126,67 @@ const settings = async (app) => {
   components_showComponent('app');
 };
 
-const tfnMultiplierSettings = () => {
+const tfnMultiplierSettings = (app) => {
+  const multiplierData = {
+    input: {},
+    output: {},
+  };
+
   hideComponent('app');
   showComponent('loader');
-  // here you can
-  // const columns = [];
-  // const transformations = prepareTransformations(tfns);
-  hideComponent('loader');
-  showComponent('app');
-  // renderTransformations(transformations);
+
+  app.listen('config', cfg => {
+    multiplierData.input = cfg;
+    addListItems(cfg);
+    hideComponent('loader');
+    showComponent('app');
+  });
+
+  app.listen('save', () => {
+    const form = document.querySelector('#my_form');
+    const data = new FormData(form);
+
+    const selectedKeys = [...data.keys()];
+    const inputcolumns = [];
+
+    multiplierData.input.context.available_columns.forEach(element => {
+      if (selectedKeys.includes(element.name)) {
+        inputcolumns.push(element);
+      }
+    });
+
+    const result = {
+      settings: {
+        args: [
+          {
+            from: 'COL-00000-000',
+            to: 'B',
+          },
+          {
+            from: 'COL-00000-000',
+            to: 'C',
+          },
+        ],
+      },
+      overview: '',
+      columns: {
+        input: inputcolumns,
+        output: [
+          {
+            name: 'B',
+            type: 'string',
+            description: 'colum B',
+          },
+          {
+            name: 'C',
+            type: 'integer',
+            description: 'column C',
+          },
+        ],
+      },
+    };
+    app.emit('save', { data: result, status: 'ok' });
+  });
 };
 
 ;// CONCATENATED MODULE: ./ui/src/pages/settings.js

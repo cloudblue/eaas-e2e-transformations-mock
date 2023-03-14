@@ -2,7 +2,7 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 536:
+/***/ 56:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 
@@ -18,7 +18,32 @@ All rights reserved.
 /* eslint-disable import/prefer-default-export */
 const utils_getSettings = () => fetch('/api/settings').then((response) => response.json());
 
-const getTfns = () => fetch('/api/transformations').then((response) => response.json());
+const utils_getTfns = () => fetch('/api/transformations').then((response) => response.json());
+
+const liTemplate = (label, checked) => `
+  <label>
+    <input type="checkbox" name="${label}" value="1" ${checked && 'checked'}>
+    <span>${label}</span>
+  </label>`;
+
+const addListItems = config => {
+  const parent = document.getElementById('increase_columns');
+  const availableColumns = config.context.available_columns;
+  const selectedColumns = config.columns.input;
+
+  availableColumns.forEach(column => {
+    const li = document.createElement('li');
+    let checked = false;
+    if (selectedColumns.find(x => x.name === column.name)) {
+      checked = true;
+    }
+
+    li.appendChild(document.createTextNode(column.name));
+    li.classList.add('list-item');
+    li.innerHTML = liTemplate(column.name, checked);
+    parent.appendChild(li);
+  });
+};
 
 ;// CONCATENATED MODULE: ./ui/src/components.js
 /*
@@ -33,7 +58,7 @@ const components_prepareSettings = (settings) => {
   } catch (e) { return ''; }
 };
 
-const prepareTransformations = (transformations) => {
+const components_prepareTransformations = (transformations) => {
   try {
     return transformations.reduce((list, transformation) => `${list}<li class="list-item">
         <div class="list-item-content">
@@ -52,7 +77,7 @@ const components_renderSettings = (settings) => {
   element.innerHTML = settings;
 };
 
-const renderTransformations = (transformations) => {
+const components_renderTransformations = (transformations) => {
   const element = document.getElementById('transformations');
   element.innerHTML = transformations;
 };
@@ -81,12 +106,12 @@ All rights reserved.
 
 
 const index = async () => {
-  components_hideComponent('app');
-  components_showComponent('loader');
+  hideComponent('app');
+  showComponent('loader');
   const tfns = await getTfns();
   const transformations = prepareTransformations(tfns);
-  components_hideComponent('loader');
-  components_showComponent('app');
+  hideComponent('loader');
+  showComponent('app');
   renderTransformations(transformations);
 };
 
@@ -101,18 +126,70 @@ const settings = async (app) => {
   showComponent('app');
 };
 
-const tfnMultiplierSettings = () => {
-  hideComponent('app');
-  showComponent('loader');
-  // here you can
-  // const columns = [];
-  // const transformations = prepareTransformations(tfns);
-  hideComponent('loader');
-  showComponent('app');
-  // renderTransformations(transformations);
+const tfnMultiplierSettings = (app) => {
+  const multiplierData = {
+    input: {},
+    output: {},
+  };
+
+  components_hideComponent('app');
+  components_showComponent('loader');
+
+  app.listen('config', cfg => {
+    multiplierData.input = cfg;
+    addListItems(cfg);
+    components_hideComponent('loader');
+    components_showComponent('app');
+  });
+
+  app.listen('save', () => {
+    const form = document.querySelector('#my_form');
+    const data = new FormData(form);
+
+    const selectedKeys = [...data.keys()];
+    const inputcolumns = [];
+
+    multiplierData.input.context.available_columns.forEach(element => {
+      if (selectedKeys.includes(element.name)) {
+        inputcolumns.push(element);
+      }
+    });
+
+    const result = {
+      settings: {
+        args: [
+          {
+            from: 'COL-00000-000',
+            to: 'B',
+          },
+          {
+            from: 'COL-00000-000',
+            to: 'C',
+          },
+        ],
+      },
+      overview: '',
+      columns: {
+        input: inputcolumns,
+        output: [
+          {
+            name: 'B',
+            type: 'string',
+            description: 'colum B',
+          },
+          {
+            name: 'C',
+            type: 'integer',
+            description: 'column C',
+          },
+        ],
+      },
+    };
+    app.emit('save', { data: result, status: 'ok' });
+  });
 };
 
-;// CONCATENATED MODULE: ./ui/src/pages/index.js
+;// CONCATENATED MODULE: ./ui/src/pages/transformations/multiplier_settings.js
 /*
 Copyright (c) 2023, CloudBlue LLC
 All rights reserved.
@@ -124,7 +201,9 @@ All rights reserved.
 
 
 (0,dist/* default */.ZP)({ 'main-card': dist/* Card */.Zb })
-  .then(() => { index(); });
+  .then(app => {
+    tfnMultiplierSettings(app);
+  });
 
 
 /***/ })
@@ -216,7 +295,7 @@ All rights reserved.
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			826: 0
+/******/ 			577: 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -266,7 +345,7 @@ All rights reserved.
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(536)))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, [216], () => (__webpack_require__(56)))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
