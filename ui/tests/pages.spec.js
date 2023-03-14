@@ -5,6 +5,7 @@ All rights reserved.
 import {
   index,
   settings,
+  tfnMultiplierSettings,
 } from '@/pages';
 import {
   getSettings,
@@ -18,11 +19,13 @@ import {
   renderTransformations,
   showComponent,
 } from '@/components';
+import { addListItems } from '../src/utils';
 
 
 jest.mock('@/utils', () => ({
   getSettings: jest.fn(() => Promise.resolve({ })),
   getTfns: jest.fn(() => Promise.resolve({})),
+  addListItems: jest.fn(),
 }));
 
 jest.mock('@/components', () => ({
@@ -37,6 +40,10 @@ jest.mock('@/components', () => ({
 const app = {
   emit: jest.fn(),
 };
+
+
+
+const context = {};
 
 describe('pages.js', () => {
   describe('index', () => {
@@ -116,6 +123,109 @@ describe('pages.js', () => {
     });
     test('calls hideLoader', () => {
       expect(hideComponent).toHaveBeenCalledWith('loader');
+    });
+  });
+
+  describe('tfnMultiplierSettings', () => {
+    const cfg = { context: { available_columns: [] } };
+    let event;
+    let cb;
+
+    beforeEach(() => {
+      app.listen = jest.fn();
+      app.emit = jest.fn();
+      tfnMultiplierSettings(app);
+      // eslint-disable-next-line prefer-destructuring
+      [event, cb] = app.listen.mock.calls[0];
+
+      cb.call(context, cfg);
+    });
+
+    test('calls hide app', () => {
+      expect(hideComponent).toHaveBeenCalledWith('app');
+    });
+
+    test('calls showLoader', () => {
+      expect(showComponent).toHaveBeenCalledWith('loader');
+    });
+
+    it('should place config listener', () => {
+      expect(event).toBe('config');
+    });
+
+    describe('config listener', () => {
+      test('calls hideLoader', () => {
+        expect(hideComponent).toHaveBeenCalledWith('loader');
+      });
+      test('calls showApp', () => {
+        expect(showComponent).toHaveBeenCalledWith('app');
+      });
+
+      test('calls addListItems', () => {
+        expect(addListItems).toHaveBeenCalledWith(cfg);
+      });
+    });
+
+    describe('save listener', () => {
+      beforeEach(() => {
+        document.body.innerHTML = `<div id="app">
+          <main-card title="List of transformations for current extension">
+            <div class="main-container">
+              <div>
+                <div class="list-wrapper">
+                  <form id="my_form">
+                    <ul id="transformations" class="list">
+                    </ul>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </main-card>
+      </div>`;
+
+        // eslint-disable-next-line prefer-destructuring
+        [event, cb] = app.listen.mock.calls[1];
+      });
+
+      it('should place save listener', () => {
+        expect(event).toBe('save');
+      });
+
+      it('calls emit', () => {
+        cb.call();
+        const result = {
+          settings: {
+            args: [
+              {
+                from: 'COL-00000-000',
+                to: 'B',
+              },
+              {
+                from: 'COL-00000-000',
+                to: 'C',
+              },
+            ],
+          },
+          overview: '',
+          columns: {
+            input: [],
+            output: [
+              {
+                name: 'B',
+                type: 'string',
+                description: 'colum B',
+              },
+              {
+                name: 'C',
+                type: 'integer',
+                description: 'column C',
+              },
+            ],
+          },
+        };
+
+        expect(app.emit).toHaveBeenCalledWith('save', { data: result, status: 'ok' });
+      });
     });
   });
 });
