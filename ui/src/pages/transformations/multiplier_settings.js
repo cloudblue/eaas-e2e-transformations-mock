@@ -13,4 +13,6 @@ import '../../../styles/index.css';
 
 
 createApp({ 'main-card': Card })
-  .then(() => { tfnMultiplierSettings(); });
+  .then(app => {
+    tfnMultiplierSettings(app);
+  });

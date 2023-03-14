@@ -3,6 +3,7 @@ Copyright (c) 2023, CloudBlue LLC
 All rights reserved.
 */
 import {
+  addListItems,
   getSettings,
   getTfns,
 } from './utils';
@@ -38,13 +39,65 @@ export const settings = async (app) => {
   showComponent('app');
 };
 
-export const tfnMultiplierSettings = () => {
+export const tfnMultiplierSettings = (app) => {
+  const multiplierData = {
+    input: {},
+    output: {},
+  };
+
   hideComponent('app');
   showComponent('loader');
-  // here you can
-  // const columns = [];
-  // const transformations = prepareTransformations(tfns);
-  hideComponent('loader');
-  showComponent('app');
-  // renderTransformations(transformations);
+
+  app.listen('config', cfg => {
+    multiplierData.input = cfg;
+    addListItems(cfg);
+    hideComponent('loader');
+    showComponent('app');
+  });
+
+  app.listen('save', () => {
+    const form = document.querySelector('#my_form');
+    const data = new FormData(form);
+
+    const selectedKeys = [...data.keys()];
+    const inputcolumns = [];
+
+    multiplierData.input.context.available_columns.forEach(element => {
+      if (selectedKeys.includes(element.name)) {
+        inputcolumns.push(element);
+      }
+    });
+
+    const result = {
+      settings: {
+        args: [
+          {
+            from: 'COL-00000-000',
+            to: 'B',
+          },
+          {
+            from: 'COL-00000-000',
+            to: 'C',
+          },
+        ],
+      },
+      overview: '',
+      columns: {
+        input: inputcolumns,
+        output: [
+          {
+            name: 'B',
+            type: 'string',
+            description: 'colum B',
+          },
+          {
+            name: 'C',
+            type: 'integer',
+            description: 'column C',
+          },
+        ],
+      },
+    };
+    app.emit('save', { data: result, status: 'ok' });
+  });
 };
