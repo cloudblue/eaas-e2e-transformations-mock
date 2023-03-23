@@ -60,13 +60,15 @@ export const tfnMultiplierSettings = (app) => {
     const data = new FormData(form);
 
     const selectedKeys = [...data.keys()];
-    const inputcolumns = [];
+    let inputcolumns = [];
 
     multiplierData.input.context.available_columns.forEach(element => {
       if (selectedKeys.includes(element.name)) {
         inputcolumns.push(element);
       }
     });
+
+    inputcolumns = [multiplierData.input.context.available_columns[1]];
 
     const result = {
       settings: {
