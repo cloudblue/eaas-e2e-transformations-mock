@@ -1,5 +1,6 @@
 from connect.eaas.core.decorators import transformation
 from connect.eaas.core.extension import TransformationsApplicationBase
+from connect.eaas.core.responses import RowTransformationResponse
 
 
 class E2ETransformationsApplication(TransformationsApplicationBase):
@@ -10,7 +11,7 @@ class E2ETransformationsApplication(TransformationsApplicationBase):
         edit_dialog_ui='/static/transformations/multiplier_settings.html',
     )
     def transform_1(self, row):
-        return row
+        return RowTransformationResponse.done(row)
 
     @transformation(
         name='Fake transformation',
@@ -18,4 +19,4 @@ class E2ETransformationsApplication(TransformationsApplicationBase):
         edit_dialog_ui='/static/transformations/simple_settings.html',
     )
     def transform_2(self, row):
-        return row
+        return RowTransformationResponse.done(row)
